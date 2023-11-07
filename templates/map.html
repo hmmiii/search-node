@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{keyword}} 검색 결과 | Search Node</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.18.1/cytoscape.min.js"></script>
+
+</head>
+
+<body>
+    <div id="cy" style="width: auto; height: 100vh;"></div>
+</body>
+<script>
+
+var cy = cytoscape({
+  container: document.getElementById('cy'),
+  elements: {
+    nodes: [
+      { data: { id: '{{keyword}}' } },
+    {% for subnode in sub %}
+      { data: { id: '{{subnode}}' } },
+    {% endfor %}
+    ],
+    edges: [
+    {% for subnode in sub %}
+    { data: { source: '{{subnode}}', target: '{{keyword}}' ,edgeWidth: 0.2}},
+    {% endfor %}
+    ]
+  },
+  style: [
+    {
+      selector: 'node',
+      style: {
+        'background-color': '#ddd',
+        'label': 'data(id)'
+      }
+    }
+  ],
+  layout: { name: 'cose' }
+});
+
+// 노드의 크기를 연결된 엣지 수에 따라 계산하는 함수
+function calculateNodeSize(node) {
+  var connectedEdges = cy.edges('[source="' + node.id() + '"], [target="' + node.id() + '"]');
+  return 3 + (connectedEdges.length * 0.4); // 크기 계산 로직
+}
+
+// 노드의 폰트 크기를 연결된 노드의 개수에 따라 계산하는 함수
+function calculateNodeFontSize(node) {
+  var connectedNodes = node.neighborhood();
+  return 3 + (connectedNodes.length * 0.3); // 폰트 크기 계산 로직
+}
+
+cy.nodes().forEach(function (node) {
+  var size = calculateNodeSize(node);
+  node.style('width', size);
+  node.style('height', size);
+  var fontSize = calculateNodeFontSize(node);
+  node.style('font-size', fontSize + 'px');
+});
+
+</script>
+
+</html>
