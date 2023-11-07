@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{keyword}} 검색 결과 | Search Node</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.18.1/cytoscape.min.js"></script>
-
+  
 </head>
 
 <body>
@@ -40,6 +40,7 @@ var cy = cytoscape({
   ],
   layout: { name: 'cose' }
 });
+
 
 // 노드의 크기를 연결된 엣지 수에 따라 계산하는 함수
 function calculateNodeSize(node) {
