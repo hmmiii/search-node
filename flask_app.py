@@ -27,5 +27,4 @@ def search():
     return render_template('map.html', keyword=keyword, nodes=nodes, edges=edges)
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    app.run()
