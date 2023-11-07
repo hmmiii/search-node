@@ -19,13 +19,13 @@ var cy = cytoscape({
   elements: {
     nodes: [
       { data: { id: '{{keyword}}' } },
-    {% for subnode in sub %}
-      { data: { id: '{{subnode}}' } },
+    {% for node in nodes %}
+      { data: { id: '{{node}}' } },
     {% endfor %}
     ],
     edges: [
-    {% for subnode in sub %}
-    { data: { source: '{{subnode}}', target: '{{keyword}}' ,edgeWidth: 0.2}},
+    {% for edge in edges %}
+    { data: { source: '{{edge.source}}', target: '{{edge.target}}' ,edgeWidth: 0.2}},
     {% endfor %}
     ]
   },

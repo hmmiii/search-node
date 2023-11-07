@@ -15,18 +15,16 @@ def search():
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     relKeyword = soup.select('.gGQDvd.iIWm4b')
-    sub = []
+    nodes = []
+    edges = []
     for rel in relKeyword:
-        sub.append(rel.text.strip())
+        nodes.append(rel.text.strip())
+        edges.append({
+            'source'  : rel.text.strip(),
+            'target'  : keyword
+        })
 
-    return redirect(url_for('map', keyword=keyword, sub=sub))
-
-#result.html
-@app.route('/map')
-def map():
-    keyword = request.args.getlist('keyword')[0]
-    sub = request.args.getlist('sub')
-    return render_template('map.html', keyword=keyword, sub=sub)
+    return render_template('map.html', keyword=keyword, nodes=nodes, edges=edges)
 
 if __name__ == '__main__':
     app.run(debug=True)
