@@ -56,9 +56,9 @@ def home():
 def search():
     keyword = request.form.get('keyword').strip()
     lv = int(request.form.get('lv').strip())
-    # lv이 3 이상이면 3으로 고정
-    if lv > 3:
-        lv = 3
+    # lv이 5 이상이면 3으로 고정
+    if lv > 5:
+        lv = 5
 
     relKeyword = searchGoogle(keyword)
     nodes = [
