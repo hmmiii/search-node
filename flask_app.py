@@ -30,10 +30,10 @@ def process_keywords(relKeywords, lv, nodes, edges, keyword=None):
         searched_keywords.add(rel_text)
         nodes.append({
             'id' : rel_text,
-            'width' : 5 - abs(lv - 1),
-            'height' : 5 - abs(lv - 1),
-            'fontSize' : 4 - abs(lv - 1),
-            'color' : f'hsla(163, 100%, {20 + (10 * abs(lv - 1))}%, 1)',
+            'width' :  lv * 5,
+            'height' : lv * 5,
+            'fontSize' : lv * 4,
+            'color' : f'hsla(163, 100%, {30 / lv}%, 1)'
         })
         if keyword:
             edges.append({
@@ -56,17 +56,17 @@ def home():
 def search():
     keyword = request.form.get('keyword').strip()
     lv = int(request.form.get('lv').strip())
-    # lv이 5 이상이면 3으로 고정
-    if lv > 5:
-        lv = 5
+    # lv이 3 이상이면 3로 고정
+    if lv > 3:
+        lv = 3
 
     relKeyword = searchGoogle(keyword)
     nodes = [
         {
             'id' : keyword,
-            'width' : 10,
-            'height' : 10,
-            'fontSize' : 5,
+            'width' : 30,
+            'height' : 30,
+            'fontSize' : 20,
             'color' : 'hsla(163, 100%, 10%, 1)',
         }
     ]
