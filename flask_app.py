@@ -18,13 +18,18 @@ def searchGoogle(keyword):
     print(f'{keyword}의 연관 검색어 검색중... {len(relKeyword)}개 검색 완료')
     return relKeyword
 
+searched_keywords = set()
 def process_keywords(relKeywords, lv, nodes, edges, keyword=None):
     if not relKeywords:
         return
 
     for rel in relKeywords:
+        rel_text = rel.text.strip()
+        if rel_text in searched_keywords:
+            continue
+        searched_keywords.add(rel_text)
         nodes.append({
-            'id' : rel.text.strip(),
+            'id' : rel_text,
             'width' : 5 - abs(lv - 1),
             'height' : 5 - abs(lv - 1),
             'fontSize' : 4 - abs(lv - 1),
@@ -32,13 +37,13 @@ def process_keywords(relKeywords, lv, nodes, edges, keyword=None):
         })
         if keyword:
             edges.append({
-                'source'  : rel.text.strip(),
+                'source'  : rel_text,
                 'target'  : keyword
             })
         if lv > 1:
-            relKeyword = searchGoogle(rel.text.strip())
+            relKeyword = searchGoogle(rel_text)
             if relKeyword:
-                process_keywords(relKeyword, lv-1, nodes, edges, rel.text.strip())
+                process_keywords(relKeyword, lv-1, nodes, edges, rel_text)
 
 app = Flask(__name__)
 
