@@ -18,9 +18,14 @@ var cy = cytoscape({
   container: document.getElementById('cy'),
   elements: {
     nodes: [
-      { data: { id: '{{keyword}}' } },
     {% for node in nodes %}
-      { data: { id: '{{node}}' } },
+      { data: {
+          id: '{{node.id}}',
+          width:'{{node.width}}',
+          height:'{{node.height}}',
+          fontSize:'{{node.fontSize}}',
+          color:'{{node.color}}'
+        } },
     {% endfor %}
     ],
     edges: [
@@ -33,8 +38,11 @@ var cy = cytoscape({
     {
       selector: 'node',
       style: {
-        'background-color': '#ddd',
-        'label': 'data(id)'
+        'background-color': 'data(color)',
+        'label': 'data(id)',
+        'width': 'data(width)',
+        'height': 'data(height)',
+        'font-size': 'data(fontSize)',
       }
     }
   ],
@@ -42,25 +50,25 @@ var cy = cytoscape({
 });
 
 
-// 노드의 크기를 연결된 엣지 수에 따라 계산하는 함수
-function calculateNodeSize(node) {
-  var connectedEdges = cy.edges('[source="' + node.id() + '"], [target="' + node.id() + '"]');
-  return 3 + (connectedEdges.length * 0.4); // 크기 계산 로직
-}
+// // 노드의 크기를 연결된 엣지 수에 따라 계산하는 함수
+// function calculateNodeSize(node) {
+//   var connectedEdges = cy.edges('[source="' + node.id() + '"], [target="' + node.id() + '"]');
+//   return 3 + (connectedEdges.length * 0.4); // 크기 계산 로직
+// }
 
-// 노드의 폰트 크기를 연결된 노드의 개수에 따라 계산하는 함수
-function calculateNodeFontSize(node) {
-  var connectedNodes = node.neighborhood();
-  return 3 + (connectedNodes.length * 0.3); // 폰트 크기 계산 로직
-}
+// // 노드의 폰트 크기를 연결된 노드의 개수에 따라 계산하는 함수
+// function calculateNodeFontSize(node) {
+//   var connectedNodes = node.neighborhood();
+//   return 3 + (connectedNodes.length * 0.3); // 폰트 크기 계산 로직
+// }
 
-cy.nodes().forEach(function (node) {
-  var size = calculateNodeSize(node);
-  node.style('width', size);
-  node.style('height', size);
-  var fontSize = calculateNodeFontSize(node);
-  node.style('font-size', fontSize + 'px');
-});
+// cy.nodes().forEach(function (node) {
+//   var size = calculateNodeSize(node);
+//   node.style('width', size);
+//   node.style('height', size);
+//   var fontSize = calculateNodeFontSize(node);
+//   node.style('font-size', fontSize + 'px');
+// });
 
 </script>
 

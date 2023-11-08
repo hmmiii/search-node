@@ -1,6 +1,44 @@
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+}
+
+def searchGoogle(keyword):
+    url = f'https://www.google.com/search?q={keyword}'
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    # soup html을 .html파일로 저장
+    # with open('test.html', 'w') as f:
+    #     f.write(soup.prettify())
+
+    relKeyword = soup.select('.gGQDvd.iIWm4b')
+    print(f'{keyword}의 연관 검색어 검색중... {len(relKeyword)}개 검색 완료')
+    return relKeyword
+
+def process_keywords(relKeywords, lv, nodes, edges, keyword=None):
+    if not relKeywords:
+        return
+
+    for rel in relKeywords:
+        nodes.append({
+            'id' : rel.text.strip(),
+            'width' : 5 - abs(lv - 1),
+            'height' : 5 - abs(lv - 1),
+            'fontSize' : 4 - abs(lv - 1),
+            'color' : f'hsla(163, 100%, {20 + (10 * abs(lv - 1))}%, 1)',
+        })
+        if keyword:
+            edges.append({
+                'source'  : rel.text.strip(),
+                'target'  : keyword
+            })
+        if lv > 1:
+            relKeyword = searchGoogle(rel.text.strip())
+            if relKeyword:
+                process_keywords(relKeyword, lv-1, nodes, edges, rel.text.strip())
 
 app = Flask(__name__)
 
@@ -9,22 +47,25 @@ def home():
     return render_template('index.html')
 
 @app.route('/search', methods=['POST'])
+
 def search():
     keyword = request.form.get('keyword').strip()
-    url = f'https://www.google.com/search?q={keyword}'
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    relKeyword = soup.select('.gGQDvd.iIWm4b')
-    nodes = []
+    lv = int(request.form.get('lv').strip())
+    relKeyword = searchGoogle(keyword)
+    nodes = [
+        {
+            'id' : keyword,
+            'width' : 10,
+            'height' : 10,
+            'fontSize' : 5,
+            'color' : 'hsla(163, 100%, 10%, 1)',
+        }
+    ]
     edges = []
-    for rel in relKeyword:
-        nodes.append(rel.text.strip())
-        edges.append({
-            'source'  : rel.text.strip(),
-            'target'  : keyword
-        })
+
+    process_keywords(relKeyword, lv, nodes, edges, keyword)
 
     return render_template('map.html', keyword=keyword, nodes=nodes, edges=edges)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
