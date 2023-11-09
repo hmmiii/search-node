@@ -12,10 +12,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] =\
         'sqlite:///' + os.path.join(basedir, 'database.db')
-engine = create_engine('sqlite:///database.db')
 db = SQLAlchemy(app)
-metadata = MetaData()
-metadata.reflect(bind=engine)
+
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
@@ -51,6 +49,9 @@ def create_edges_class(table_name):
     return Edges
 
 def add_node_row(class_name, keyword, width, height, fontSize, color):
+    engine = create_engine('sqlite:///database.db')
+    metadata = MetaData()
+    metadata.reflect(bind=engine)
     Session = sessionmaker(bind=engine)
     session = Session()
     node = class_name(keyword=keyword, width=width, height=height, fontSize=fontSize, color=color)
@@ -58,6 +59,9 @@ def add_node_row(class_name, keyword, width, height, fontSize, color):
     session.commit()
 
 def add_edge_row(class_name, source, target):
+    engine = create_engine('sqlite:///database.db')
+    metadata = MetaData()
+    metadata.reflect(bind=engine)
     Session = sessionmaker(bind=engine)
     session = Session()
     node = class_name(source=source, target=target)
@@ -111,7 +115,12 @@ def home():
 
 @app.route('/search', methods=['POST'])
 
+
 def search():
+    engine = create_engine('sqlite:///database.db')
+    metadata = MetaData()
+    metadata.reflect(bind=engine)
+
     keyword = request.form.get('keyword').strip()
     lv = int(request.form.get('lv').strip())
     # lv이 3 이상이면 3로 고정
@@ -119,8 +128,8 @@ def search():
         # lv = 3
 
     table_name = f'{keyword}_{lv}'
-
     all_table_names = metadata.tables.keys()
+    
     print(all_table_names)
     if any(all_table_name.startswith(table_name) for all_table_name in all_table_names):
         print(f"해당 테이블이 존재합니다. : '{table_name}'")
