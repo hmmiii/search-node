@@ -7,14 +7,14 @@ headers = {
 }
 
 def searchGoogle(keyword):
-    url = f'https://www.google.com/search?q={keyword}'
+    url = f'https://duckduckgo.com/?t=h_&q={keyword}'
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
-    # soup html을 .html파일로 저장
-    # with open('test.html', 'w') as f:
-    #     f.write(soup.prettify())
+    #soup html을 .html파일로 저장
+    with open('test.html', 'w') as f:
+        f.write(soup.prettify())
 
-    relKeyword = soup.select('.gGQDvd.iIWm4b')
+    relKeyword = soup.select('.related-searches__item')
     print(f'{keyword}의 연관 검색어 검색중... {len(relKeyword)}개 검색 완료')
     return relKeyword
 
