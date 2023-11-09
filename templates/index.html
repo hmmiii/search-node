@@ -19,9 +19,9 @@
     <div class="row justify-content-center mt-5">
       <div class="col-md-6">
         <form class="form-inline" action="/search" method="post" id="search-form">
-          <input class="form-control mr-sm-2 w-75 mb-2" type="text" placeholder="레벨 : 최대 깊이입니다. 최대 3까지 가능합니다." name="lv">
+          <input class="form-control mr-sm-2 w-75 mb-2" type="text" placeholder="레벨 : 최대 깊이입니다." name="lv" required>
           <input class="form-control mr-sm-2 w-75" type="search" placeholder="검색어" aria-label="Search"
-            name="keyword">
+            name="keyword" required>
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
       </div>
